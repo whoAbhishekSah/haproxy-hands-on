@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  db:
+    image: "postgres:12"
+    container_name: "siren_db"
+    ports:
+      - "5432:5432"
+    volumes:
+      - siren_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "siren_dev"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+  siren_web_1:
+    image: "odpf/siren:0.1.2"
+    ports:
+      - "5000:3000"
+    env_file:
+      - siren.env
+    command: serve
+    depends_on:
+      - db
+  siren_web_2:
+    image: "odpf/siren:0.1.2"
+    ports:
+      - "5001:3000"
+    env_file:
+      - siren.env
+    command: serve
+    depends_on:
+      - db
+
+volumes:
+  siren_data:
